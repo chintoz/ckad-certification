@@ -8,4 +8,4 @@
 
 ## My notes
 
-There is a Github Pages with all the information gathered through the resources:
+There is a Github Pages with all the information gathered through the resources: https://chintoz.github.io/ckad-certification/

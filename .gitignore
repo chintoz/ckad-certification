@@ -1,0 +1,17 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# Build
+/build/
+out/
+
+# Dependency directories
+/node_modules/

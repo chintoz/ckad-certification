@@ -1,6 +1,9 @@
 # CKAD Certification Resources
 
 <li class="masthead__menu-item">
+    <a href="/ckad-certification/tips.html">Exam Tips</a>
+</li>
+<li class="masthead__menu-item">
     <a href="/ckad-certification/unit1.html">Unit 1 - Core Concepts</a>
 </li>
 <li class="masthead__menu-item">

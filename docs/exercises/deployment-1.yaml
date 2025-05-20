@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: ckad
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: v1
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: v1
+        tier: backend
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.23.0

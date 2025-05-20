@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: complex-pod
+  namespace: ckad
+spec:
+  containers:
+    - name: app
+      image: nginx:1.25.1
+      ports:
+        - containerPort: 80
+  initContainers:
+    - name: setup
+      image: busybox:1.36.1
+      command: ["wget", "-O-", "google.com"]

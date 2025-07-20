@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: backend
+  namespace: ckad
+spec:
+  containers:
+    - name: nginx
+      image: nginx:1.23.4-alpine
+      volumeMounts:
+        - name: config-volume
+          mountPath: /etc/config
+  volumes:
+    - name: config-volume
+      configMap:
+        name: app-config

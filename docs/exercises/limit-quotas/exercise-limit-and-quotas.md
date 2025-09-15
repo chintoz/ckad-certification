@@ -235,7 +235,7 @@ spec:
   containers:
   - name: nginx
     image: nginx:1.23.4-alpine
-``
+```
 
 Create the Pod:
 

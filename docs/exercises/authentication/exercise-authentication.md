@@ -62,6 +62,7 @@ kubectl config unset users.mary
 rm mary.key mary.csr mary.crt
 ```
 
+
 ## Exercise 2
 
 ### Description
@@ -78,7 +79,104 @@ Assign a ClusterRole and RoleBinding to the service account that allows only the
 
 ### Solution
 
-TBC
+Create the namespace:
+
+```bash
+kubectl create namespace t23
+```
+
+Create the Pod manifest `pod-exercise2.yaml`:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: service-list
+  namespace: t23
+spec:
+  containers:
+  - name: curl-container
+    image: alpine/curl:3.14
+    command: ["sh", "-c", "while true; do curl -k https://kubernetes.default.svc/api/v1/namespaces/default/services; sleep 5; done"]    
+    env:
+    - name: KUBERNETES_SERVICE_HOST
+      value: "kubernetes.default.svc"
+    - name: KUBERNETES_SERVICE_PORT
+      value: "443"
+  serviceAccountName: api-call
+```
+
+Create the Pod:
+
+```bash
+kubectl apply -f pod.yaml
+```
+
+Create the service account:
+
+```bash
+kubectl create serviceaccount api-call -n t23
+```
+
+Inspect the container logs:
+
+```bash
+kubectl logs -f service-list -n t23
+```
+
+You should see a `403 Forbidden` response from the `curl` command, as the service account does not have permissions to list Services.
+
+Create a Role that allows listing Services in the default namespace. Create a RoleBinding to bind the Role to the service account. Create the manifest `role-binding.yaml`:
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: service-list-role
+rules:
+- apiGroups: [""]
+  resources: ["services"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: service-list-binding
+  namespace: default
+subjects:
+- kind: ServiceAccount
+  name: api-call
+  namespace: t23
+roleRef:
+  kind: Role
+  name: service-list-role
+  apiGroup: rbac.authorization.k8s.io
+```
+
+Apply the Role and RoleBinding:
+
+```bash
+kubectl apply -f role-binding.yaml
+```
+
+Inspect the container logs again:
+
+```bash
+kubectl logs -f service-list -n t23
+```
+
+You should now see a list of Services in the default namespace.
+
+Destroy all the resources created during the exercise:
+
+```bash
+kubectl delete pod service-list -n t23
+kubectl delete serviceaccount api-call -n t23
+kubectl delete rolebinding service-list-binding -n default
+kubectl delete role service-list-role -n default
+kubectl delete namespace t23
+```
 
 ## Exercise 3
 
@@ -92,4 +190,24 @@ Inspect the command-line flag that defines the admission controller plugins. Cap
 
 ### Solution
 
-TBC
+Inspect the API server manifest file. The location of the file may vary depending on your Kubernetes setup. For a kubeadm-based cluster, it is typically located at `/etc/kubernetes/manifests/kube-apiserver.yaml`.
+
+```bash
+cat /etc/kubernetes/manifests/kube-apiserver.yaml
+```
+
+Look for the `--enable-admission-plugins` flag in the command section of the manifest. The value of this flag lists the enabled admission controller plugins.
+
+For example, you might see something like this:
+
+```yaml
+- --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota
+```
+
+This indicates that the following admission controller plugins are enabled:
+
+- NamespaceLifecycle
+- LimitRanger
+- ServiceAccount
+- DefaultStorageClass
+- ResourceQuota

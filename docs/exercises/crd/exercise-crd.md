@@ -14,7 +14,33 @@ Inspect the schema of the CRD. What are the type and property names of this CRD?
 
 ### Solution
 
-TBC
+
+Install the operator:
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/mongodb/mongodb-kubernetes-operator/v0.13.1/config/crd/bases/mongodbcommunity.mongodb.com_mongodbcommunity.yaml
+```
+
+List all CRDs:
+
+```bash
+kubectl get crds
+```
+
+You should see an entry for `mongodbcommunity.mongodb.com`.
+Inspect the schema of the CRD:
+
+```bash
+kubectl get crd mongodbcommunity.mongodb.com -o yaml
+```
+
+You should see that the CRD has a `spec` property of type `object` with several properties, including `members`, `type`, `version`, and `security`.
+
+Destroy all the resources created during the exercise:
+
+```bash
+kubectl delete -f https://raw.githubusercontent.com/mongodb/mongodb-kubernetes-operator/v0.13.1/config/crd/bases/mongodbcommunity.mongodb.com_mongodbcommunity.yaml
+```
 
 ## Exercise 2
 

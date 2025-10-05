@@ -85,6 +85,12 @@ Create the namespace:
 kubectl create namespace t23
 ```
 
+Create the service account:
+
+```bash
+kubectl create serviceaccount api-call -n t23
+```
+
 Create the Pod manifest `pod-exercise2.yaml`:
 
 ```yaml
@@ -109,13 +115,7 @@ spec:
 Create the Pod:
 
 ```bash
-kubectl apply -f pod.yaml
-```
-
-Create the service account:
-
-```bash
-kubectl create serviceaccount api-call -n t23
+kubectl apply -f pod-exercise2.yaml
 ```
 
 Inspect the container logs:
@@ -189,6 +189,12 @@ Locate the configuration file of the API server.
 Inspect the command-line flag that defines the admission controller plugins. Capture the value
 
 ### Solution
+
+Conectar al control plane:
+
+```bash
+docker exec -it kind-control-plane bash
+```
 
 Inspect the API server manifest file. The location of the file may vary depending on your Kubernetes setup. For a kubeadm-based cluster, it is typically located at `/etc/kubernetes/manifests/kube-apiserver.yaml`.
 
